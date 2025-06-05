@@ -1,0 +1,32 @@
+{
+  "name": "ghost-ai-racing",
+  "version": "1.0.0",
+  "description": "A racing AI project that simulates decision-making and learning for racing cars.",
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ghost-ai-racing.git"
+  },
+  "keywords": [
+    "AI",
+    "racing",
+    "simulation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.5.0",
+    "jest": "^27.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0"
+  }
+}
