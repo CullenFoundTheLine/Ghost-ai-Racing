@@ -1,3 +1,5 @@
+// src/data/storage.ts
+
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -9,7 +11,7 @@ export class StorageService {
   private basePath: string;
 
   constructor() {
-    // __dirname for this file is .../src/data
+    // __dirname refers to .../src/data
     this.basePath = path.resolve(__dirname, 'storage');
     if (!fs.existsSync(this.basePath)) {
       fs.mkdirSync(this.basePath, { recursive: true });

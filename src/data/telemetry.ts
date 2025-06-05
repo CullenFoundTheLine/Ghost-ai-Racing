@@ -1,3 +1,5 @@
+// src/data/telemetry.ts
+
 import { RaceData } from '../models/RaceData';
 
 /**
@@ -97,25 +99,3 @@ export class TelemetryAnalyzer {
     return 100 - Math.sqrt(variance); // higher is more stable
   }
 }
-// Example usage
-// const telemetryData: TelemetryData[] = [
-//   {
-//     speed: 100,
-//     engineRPM: 5000,
-//     gear: 3,
-//     throttlePosition: 0.8,
-//     brakePressure: 0.1,
-//     tireTemps: { frontLeft: 85, frontRight: 87, rearLeft: 80, rearRight: 82 },
-//     timestamp: new Date().toISOString(),
-//   },
-//   {
-//     speed: 120,
-//     engineRPM: 6000,
-//     gear: 4,
-//     throttlePosition: 0.9,
-//     brakePressure: 0.2,
-//     tireTemps: { frontLeft: 88, frontRight: 90, rearLeft: 83, rearRight: 85 },
-//     timestamp: new Date(new Date().getTime() + 5000).toISOString(),
-//   }
-// ];
-// ];

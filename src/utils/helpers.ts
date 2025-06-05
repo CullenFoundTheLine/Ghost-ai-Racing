@@ -30,6 +30,7 @@ export function calculateVariance(arr: number[]): number {
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
+
 /**
  * Converts a time in seconds to a formatted string (MM:SS).
  * @param seconds - Time in seconds.
@@ -39,6 +40,7 @@ export function formatTime(seconds: number): string {
   const secs = Math.floor(seconds % 60);
   return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
+
 /**
  * Generates a random integer between min and max (inclusive).
  * @param min - Minimum value.
