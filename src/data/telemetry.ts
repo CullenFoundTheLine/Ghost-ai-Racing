@@ -35,7 +35,7 @@ export class TelemetryAnalyzer {
     const driverMistakes = TelemetryAnalyzer.identifyMistakes(data);
     const stabilityScore = TelemetryAnalyzer.calculateStability(data);
 
-    // timeToNextDriver / timeToLeadDriver require leaderboard integration
+    // timeToNextDriver and timeToLeadDriver require leaderboard integration
     const timeToNextDriver = 0;
     const timeToLeadDriver = 0;
 
@@ -60,42 +60,45 @@ export class TelemetryAnalyzer {
   }
 
   private static calculateAverageSpeed(data: TelemetryData[]): number {
-    const total = data.reduce((sum, d) => sum + d.speed, 0);
+    const total = data.reduce((sum: number, d: TelemetryData) => sum + d.speed, 0);
     return total / Math.max(data.length, 1);
   }
 
   private static calculateMaxSpeed(data: TelemetryData[]): number {
-    return Math.max(...data.map((d) => d.speed));
+    return Math.max(...data.map((d: TelemetryData) => d.speed));
   }
 
   private static calculateTireWear(data: TelemetryData[]): number {
     // Simplified: difference between max and min average tire temp
-    const avgTemps = data.map((d) => {
-      const temps = Object.values(d.tireTemps);
-      const sum = temps.reduce((s, val) => s + val, 0);
+    const avgTemps = data.map((d: TelemetryData) => {
+      const temps: number[] = Object.values(d.tireTemps);
+      const sum = temps.reduce((s: number, val: number) => s + val, 0);
       return sum / temps.length;
     });
     return Math.max(...avgTemps) - Math.min(...avgTemps);
   }
 
   private static calculateThrottleUsage(data: TelemetryData[]): number {
-    return data.reduce((sum, d) => sum + d.throttlePosition, 0) / Math.max(data.length, 1);
+    return data.reduce((sum: number, d: TelemetryData) => sum + d.throttlePosition, 0) / Math.max(data.length, 1);
   }
 
   private static calculateBrakeUsage(data: TelemetryData[]): number {
-    return data.reduce((sum, d) => sum + d.brakePressure, 0) / Math.max(data.length, 1);
+    return data.reduce((sum: number, d: TelemetryData) => sum + d.brakePressure, 0) / Math.max(data.length, 1);
   }
 
   private static identifyMistakes(data: TelemetryData[]): number {
-    // Placeholder logic: count times when brake > 0.8 at high speed
-    return data.filter((d) => d.brakePressure > 0.8 && d.speed > 180).length;
+    // Placeholder logic: count times when brake > 0.8 and speed > 180
+    return data.filter((d: TelemetryData) => d.brakePressure > 0.8 && d.speed > 180).length;
   }
 
   private static calculateStability(data: TelemetryData[]): number {
-    const speeds = data.map((d) => d.speed);
-    const mean = speeds.reduce((s, v) => s + v, 0) / Math.max(speeds.length, 1);
-    const variance =
-      speeds.reduce((s, v) => s + (v - mean) ** 2, 0) / Math.max(speeds.length, 1);
+    const speeds: number[] = data.map((d: TelemetryData) => d.speed);
+    const mean: number = speeds.reduce((s: number, v: number) => s + v, 0) / Math.max(speeds.length, 1);
+    const variance: number =
+      speeds.reduce((s: number, v: number) => s + (v - mean) ** 2, 0) / Math.max(speeds.length, 1);
     return 100 - Math.sqrt(variance); // higher is more stable
   }
 }
+
+// Ensure this file is treated as a module.
+export {};

@@ -1,66 +1,62 @@
 // src/ai/GhostMind.ts
 
-import { GhostMemory } from './GhostMemory';
-import { Regulations } from '../data/trackRules';
+import { RaceData } from '../models/RaceData';
+import { FIA_REGULATIONS } from '../data/trackRules';
 
+/**
+ * GhostMind is the decision engine. It takes current telemetry and returns:
+ *   - 'DRIFT_ATTACK'   when conditions (corner, speed, style) allow drifting
+ *   - 'HARD_BRAKE'     when approaching a very steep corner at high speed
+ *   - 'COOL_DOWN'      when tires or parts are too hot/worn
+ *   - 'MAINTAIN'       otherwise
+ */
 export class GhostMind {
-  private memory: GhostMemory;
-  private regulations: Regulations;
+  constructor(private memory: any, private rules: typeof FIA_REGULATIONS) {}
 
-  constructor(memory: GhostMemory, regulations: Regulations) {
-    this.memory = memory;
-    this.regulations = regulations;
-  }
-
-  /**
-   * Decide an action string based on current conditions:
-   *   - cornerAngle (degrees)
-   *   - speed (km/h)
-   *   - driftPossible (boolean)
-   *   - drivingStyle ("aggressive" | "conservative" etc.)
-   *   - partHealth (Map<partName, durabilityValue>)
-   *   - tireTemp (°C)
-   */
-  decideAction(
+  public decideAction(
     cornerAngle: number,
     speed: number,
     driftPossible: boolean,
-    drivingStyle: string,
+    drivingStyle: 'aggressive' | 'conservative',
     partHealth: Map<string, number>,
     tireTemp: number
   ): string {
-    // 1. Tire Overheating check
+    // 1) Tire overheat has absolute priority
     if (tireTemp > 95) {
-      this.memory.recordIssue(
-        'Tire overheating',
-        `Temperature ${tireTemp.toFixed(0)}°C > safe limit`,
-        'Suggest softer compound or earlier braking.'
-      );
+      this.memory.logIssue('Tire overheating', {
+        tireTemp,
+        speed,
+        cornerAngle,
+      });
       return 'COOL_DOWN';
     }
 
-    // 2. Suspension + Tire health synergy check
-    const suspensionHealth = partHealth.get('Suspension') ?? 100;
-    const tireHealth = partHealth.get('Tires') ?? 100;
-    if (suspensionHealth < 60 && tireHealth < 70) {
-      this.memory.recordIssue(
-        'Compound wear issue',
-        `Suspension ${suspensionHealth}%, Tires ${tireHealth}%`,
-        'Upgrade suspension or change driving style.'
-      );
-    }
-
-    // 3. Drift logic
-    if (driftPossible && drivingStyle.toLowerCase() === 'aggressive') {
+    // 2) If conditions allow drifting, and driver is aggressive, do it immediately
+    //    (e.g. Becketts apex: speed ~160, cornerAngle ~50°, driftPossible true)
+    if (driftPossible && drivingStyle === 'aggressive') {
+      this.memory.logIssue('Initiating drift', { speed, cornerAngle });
       return 'DRIFT_ATTACK';
     }
 
-    // 4. Hard braking if too fast into a sharp corner
-    if (speed > this.regulations.maxSpeedLimit - 20 && cornerAngle > 30) {
+    // 3) If corner is very steep (> 30°) and speed > 150, brake hard
+    //    (e.g. Maggotts entry: 180 km/h, 40°)
+    if (cornerAngle > 30 && speed > 150) {
+      this.memory.logIssue('High speed into sharp corner', {
+        speed,
+        cornerAngle,
+      });
       return 'HARD_BRAKE';
     }
 
-    // Default: keep racing line
+    // 4) If parts (tires or suspension) are too worn, cool down
+    const tireHealth = partHealth.get('Tires') ?? 100;
+    const suspensionHealth = partHealth.get('Suspension') ?? 100;
+    if (tireHealth < 60 || suspensionHealth < 50) {
+      this.memory.logIssue('Part health low', { tireHealth, suspensionHealth });
+      return 'COOL_DOWN';
+    }
+
+    // 5) Otherwise, maintain pace
     return 'MAINTAIN';
   }
 }

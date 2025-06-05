@@ -1,4 +1,4 @@
-// src/data/storage.ts
+/// <reference types="node" />
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -11,8 +11,10 @@ export class StorageService {
   private basePath: string;
 
   constructor() {
-    // __dirname refers to .../src/data
-    this.basePath = path.resolve(__dirname, 'storage');
+    // Use process.cwd() to get the absolute project root,
+    // then point to 'src/data/storage'.
+    this.basePath = path.resolve(process.cwd(), 'src', 'data', 'storage');
+
     if (!fs.existsSync(this.basePath)) {
       fs.mkdirSync(this.basePath, { recursive: true });
     }
@@ -46,3 +48,6 @@ export class StorageService {
     }
   }
 }
+
+// This empty export ensures this file is treated as a module.
+export {};

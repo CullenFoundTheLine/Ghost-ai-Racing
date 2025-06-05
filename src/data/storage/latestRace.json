@@ -1,0 +1,12 @@
+{
+  "lapTime": 0.4,
+  "averageSpeed": 218,
+  "maxSpeed": 280,
+  "tireWear": 20,
+  "throttleUsage": 0.58,
+  "brakeUsage": 0.19999999999999998,
+  "driverMistakes": 0,
+  "stabilityScore": 56,
+  "timeToNextDriver": 0,
+  "timeToLeadDriver": 0
+}

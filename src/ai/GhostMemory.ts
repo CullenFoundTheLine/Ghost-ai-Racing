@@ -16,6 +16,7 @@ export class GhostMemory {
   private feedbackList: Feedback[] = [];
   private contextMemory: Map<string, any> = new Map();
   private recycledKeys: Set<string> = new Set();
+  private issues: { issueType: string; details: Record<string, any>; timestamp: string }[] = [];
 
   /**
    * Record a high‐level issue with cause and a suggested fix.
@@ -118,5 +119,19 @@ export class GhostMemory {
    */
   public getDriverHabit(driver: string): string | undefined {
     return this.driverHabits.get(driver);
+  }
+
+  /**
+   * Log an issue or event for later analysis.
+   * @param issueType A short string describing the issue (e.g. 'Tire overheating')
+   * @param details   An object with relevant details (e.g. { tireTemp, speed, cornerAngle })
+   */
+  public logIssue(issueType: string, details: Record<string, any>): void {
+    if (!this.issues) this.issues = [];
+    this.issues.push({ issueType, details, timestamp: new Date().toISOString() });
+  }
+
+  public getIssues() {
+    return this.issues;
   }
 }

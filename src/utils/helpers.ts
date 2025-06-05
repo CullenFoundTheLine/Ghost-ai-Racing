@@ -15,9 +15,9 @@ export function formatNumber(value: number, decimals: number = 2): string {
  */
 export function calculateVariance(arr: number[]): number {
   if (arr.length === 0) return 0;
-  const mean = arr.reduce((sum, v) => sum + v, 0) / arr.length;
+  const mean = arr.reduce((sum: number, v: number) => sum + v, 0) / arr.length;
   const variance =
-    arr.reduce((sum, v) => sum + (v - mean) ** 2, 0) / arr.length;
+    arr.reduce((sum: number, v: number) => sum + (v - mean) ** 2, 0) / arr.length;
   return variance;
 }
 
@@ -38,7 +38,11 @@ export function clamp(value: number, min: number, max: number): number {
 export function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
-  return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+  // Manual zero-padding instead of padStart
+  const minutesStr = minutes < 10 ? '0' + minutes : String(minutes);
+  const secsStr = secs < 10 ? '0' + secs : String(secs);
+  return `${minutesStr}:${secsStr}`;
 }
 
 /**
@@ -49,3 +53,6 @@ export function formatTime(seconds: number): string {
 export function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+// Ensure this file is treated as a module.
+export {};
